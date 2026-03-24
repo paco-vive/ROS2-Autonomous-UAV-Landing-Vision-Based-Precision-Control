@@ -13,7 +13,7 @@ A full simulation of an Unmanned Aerial Vehicle (UAV) designed to autonomously d
 
 | 🌍 Gazebo Environment | 🛠️ RViz2 Visualization | 👁️ Computer Vision (OpenCV) |
 |---|---|---|
-| ![Gazebo](assets/drone_gazebo.png) | ![RViz](assets/drone_rviz.jpg) | ![OpenCV](assets/drone_vision.jpg) |
+| ![Gazebo](assets/drone_gazebo.png) | ![RViz](assets/drone_rviz.png) | ![OpenCV](assets/drone_vision.png) |
 
 > **🎥 Watch the Autonomous Landing Demo:** [YouTube Link](https://youtu.be/_jGU0q87a7U)
 
