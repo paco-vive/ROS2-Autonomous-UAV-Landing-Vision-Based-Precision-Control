@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="mi_helipuerto">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>1 1</size>
+          </plane>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>1 1</size>
+          </plane>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://mi_helipuerto/materials/scripts</uri>
+            <uri>model://mi_helipuerto/materials/textures</uri>
+            <name>MiHelipuerto/Imagen</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<robot name="mi_dron">
+
+
+ <link name="base_link">
+   <visual>
+     <geometry><box size="0.2 0.2 0.08"/></geometry>
+     <material name="dark_grey"><color rgba="0.2 0.2 0.2 1"/></material>
+   </visual>
+   <collision>
+     <geometry><box size="0.2 0.2 0.08"/></geometry>
+   </collision>
+   <inertial>
+     <mass value="1.0"/>
+     <inertia ixx="0.5" ixy="0" ixz="0" iyy="0.5" iyz="0" izz="0.02"/>
+   </inertial>
+ </link>
+
+
+ <link name="arm_1"><visual><geometry><box size="0.25 0.02 0.02"/></geometry><material name="grey"><color rgba="0.5 0.5 0.5 1"/></material></visual></link>
+ <joint name="j1" type="fixed"><parent link="base_link"/><child link="arm_1"/><origin xyz="0.12 0.12 0" rpy="0 0 0.785"/></joint>
+
+
+ <link name="arm_2"><visual><geometry><box size="0.25 0.02 0.02"/></geometry></visual></link>
+ <joint name="j2" type="fixed"><parent link="base_link"/><child link="arm_2"/><origin xyz="0.12 -0.12 0" rpy="0 0 -0.785"/></joint>
+
+
+ <link name="arm_3"><visual><geometry><box size="0.25 0.02 0.02"/></geometry></visual></link>
+ <joint name="j3" type="fixed"><parent link="base_link"/><child link="arm_3"/><origin xyz="-0.12 0.12 0" rpy="0 0 -0.785"/></joint>
+
+
+ <link name="arm_4"><visual><geometry><box size="0.25 0.02 0.02"/></geometry></visual></link>
+ <joint name="j4" type="fixed"><parent link="base_link"/><child link="arm_4"/><origin xyz="-0.12 -0.12 0" rpy="0 0 0.785"/></joint>
+
+
+ <link name="m1"><visual><geometry><cylinder radius="0.06" length="0.01"/></geometry><material name="red"><color rgba="1 0 0 1"/></material></visual></link>
+ <joint name="jm1" type="fixed"><parent link="arm_1"/><child link="m1"/><origin xyz="0.12 0 0.02" rpy="0 0 0"/></joint>
+
+
+ <link name="m2"><visual><geometry><cylinder radius="0.06" length="0.01"/></geometry><material name="red"/></visual></link>
+ <joint name="jm2" type="fixed"><parent link="arm_2"/><child link="m2"/><origin xyz="0.12 0 0.02" rpy="0 0 0"/></joint>
+
+
+ <link name="m3"><visual><geometry><cylinder radius="0.06" length="0.01"/></geometry><material name="black"><color rgba="0 0 0 1"/></material></visual></link>
+ <joint name="jm3" type="fixed"><parent link="arm_3"/><child link="m3"/><origin xyz="-0.12 0 0.02" rpy="0 0 0"/></joint>
+
+
+ <link name="m4"><visual><geometry><cylinder radius="0.06" length="0.01"/></geometry><material name="black"/></visual></link>
+ <joint name="jm4" type="fixed"><parent link="arm_4"/><child link="m4"/><origin xyz="-0.12 0 0.02" rpy="0 0 0"/></joint>
+
+
+ <gazebo>
+   <plugin name="motor_dron" filename="libgazebo_ros_force.so">
+     <ros><namespace>/</namespace><remapping>gazebo_ros_force:=cmd_force</remapping></ros>
+     <link_name>base_link</link_name>
+     <force_frame>world</force_frame>
+   </plugin>
+   <gravity>1</gravity>
+ </gazebo>
+
+
+ <gazebo reference="m1"><material>Gazebo/Red</material></gazebo>
+ <gazebo reference="m2"><material>Gazebo/Red</material></gazebo>
+ <gazebo reference="m3"><material>Gazebo/Black</material></gazebo>
+ <gazebo reference="m4"><material>Gazebo/Black</material></gazebo>
+ <gazebo reference="base_link"><material>Gazebo/Grey</material></gazebo>
+
+<link name="camera_link">
+    <visual>
+      <geometry><box size="0.05 0.05 0.05"/></geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.1 0 -0.05" rpy="0 1.5708 0"/>
+  </joint>
+
+  <gazebo reference="camera_link">
+    <sensor type="camera" name="sensor_dron">
+      <update_rate>30.0</update_rate>
+      <visualize>true</visualize> <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>600</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <cameraName>dron/camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>
