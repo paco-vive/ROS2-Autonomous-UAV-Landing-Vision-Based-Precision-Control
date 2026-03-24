@@ -19,8 +19,7 @@ This repository features a fully autonomous Unmanned Aerial Vehicle (UAV) simula
 ### 📹 Autonomous Landing Demo
 Watch the vision-based controller guide the UAV to a precision landing:
 
-https://github.com/paco-vive/mi_dron_sim/assets/drone_video.mp4
-
+https://youtu.be/_jGU0q87a7U
 ---
 
 ## ⚙️ Core Components
