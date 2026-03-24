@@ -5,51 +5,54 @@
 [![OpenCV](https://img.shields.io/badge/Vision-OpenCV-green)](https://opencv.org/)
 [![Python](https://img.shields.io/badge/Language-Python-yellow)](https://www.python.org/)
 
-This repository features a fully autonomous Unmanned Aerial Vehicle (UAV) simulation designed to detect, track, and land on a moving or static helipad. Developed using **ROS 2 Humble**, it integrates real-time computer vision with custom flight control algorithms in a high-fidelity **Gazebo** environment.
+Este repositorio contiene una simulación completa de un Vehículo Aéreo No Tripulado (UAV) diseñado para detectar, rastrear y aterrizar de forma autónoma en un helipuerto utilizando **ROS 2 Humble**, **Gazebo** y **OpenCV**.
 
 ---
 
-## 📸 Simulation Preview
+## 📸 Vista Previa del Sistema
 
-### System Modeling & Visualization
-| Photo 1: Gazebo Environment | Photo 2: RViz2 Sensor Fusion |
-|---|---|
-| <img src="assets/drone_gazebo.jpg" width="400"> | <img src="assets/drone_rviz.jpg" width="400"> |
+| 🌍 Entorno Gazebo | 🛠️ Visualización RViz2 | 👁️ Visión Computacional (OpenCV) |
+|---|---|---|
+| ![Gazebo](assets/drone_gazebo.jpg) | ![RViz](assets/drone_rviz.jpg) | ![OpenCV](assets/drone_vision.jpg) |
 
-### 📹 Autonomous Landing Demo
-Watch the vision-based controller guide the UAV to a precision landing:
-
-https://youtu.be/_jGU0q87a7U
----
-
-## ⚙️ Core Components
-
-### 👁️ Computer Vision & Tracking
-* **Detection:** Implemented a real-time detection pipeline using **OpenCV**.
-* **Processing:** Utilized **HSV color space filtering** and contour analysis to isolate the landing target from the downward-facing camera feed.
-* **Coordinate Mapping:** Transforms pixel-space errors ($u, v$) into spatial displacement vectors relative to the UAV's body frame.
-
-### 🎮 Flight Control & Physics
-* **P-Controller:** Engineered a custom **Proportional Control** system in Python to translate vision errors into 3D velocity commands ($V_x, V_y, V_z$).
-* **Physics Engine:** Developed a gravity-compensation layer to maintain a stable $9.81N$ hover and implemented smooth descent logic for the final landing phase.
-* **State Management:** Handles transitions between *Search*, *Track*, *Descend*, and *Land* states.
-
-### 🏗️ Modeling & Simulation
-* **URDF/Xacro:** Modular UAV model with optimized inertial parameters ($I_{xx}, I_{yy}$) for realistic flight stability.
-* **TF2 Transforms:** Managed the coordinate transform tree between the `map`, `base_link`, and `camera_link`.
-* **RViz2 Integration:** Real-time visualization of sensor data, camera overlays, and the TF tree for debugging.
+> **🎥 Mira el Video del Aterrizaje Autónomo:** [Link a tu video de YouTube](https://youtu.be/_jGU0q87a7U)
 
 ---
 
-## 🚀 Getting Started
+## 🧠 Desafíos Técnicos y Soluciones
 
-### Prerequisites
+Este proyecto no solo es código, sino la resolución de problemas físicos en un entorno de simulación:
+
+* **Compensación de Gravedad:** Implementé una capa de control que mantiene una fuerza constante de $9.81N$ para lograr un estado de *Hover* (flotación) estable, traduciendo comandos de velocidad (`Twist`) a fuerzas físicas (`Wrench`).
+* **Efecto Péndulo y Estabilidad:** Para evitar el *overshoot* (pasarse de largo), configuré una **Zona Muerta** de 15 píxeles y un limitador de velocidad máxima ($0.15 m/s$), además de ajustar los momentos de inercia ($I_{xx}, I_{yy}$) en el URDF para un vuelo más suave.
+* **Control Proporcional (P):** El seguidor utiliza un controlador proporcional para convertir el error de píxeles $(x, y)$ de la cámara en comandos de movimiento lateral y descenso gradual.
+
+---
+
+## ⚙️ Componentes Principales
+
+### 🎮 Control de Vuelo (`controlador_dron.py`)
+Un nodo que actúa como puente entre la lógica de alto nivel y la física de Gazebo. Recibe comandos de velocidad y los aplica como fuerzas al `base_link` del dron, permitiendo un descenso controlado de $7.5N$ o un ascenso de $14.0N$.
+
+### 👁️ Visión Artificial (`seguidor_helipuerto.py`)
+* **Detección:** Filtro de color en espacio **HSV** para aislar el helipuerto.
+* **Tracking:** Cálculo de momentos de contorno para hallar el centro del objetivo.
+* **Lógica de Aterrizaje:** Si el dron está centrado ($< 30px$ de error), inicia el descenso automático.
+
+### 🏗️ Modelado URDF
+Modelo modular con una cámara fija orientada al suelo ($90^\circ$ pitch) y plugins de Gazebo para la aplicación de fuerzas (`libgazebo_ros_force.so`).
+
+---
+
+## 🚀 Instalación y Uso
+
+### Requisitos
 * ROS 2 Humble (Ubuntu 22.04)
-* Gazebo (Classic or Ignition)
-* OpenCV & CV-Bridge
+* Gazebo Classic
+* OpenCV y CV-Bridge (`sudo apt install ros-humble-cv-bridge python3-opencv`)
 
-### Installation
-1. **Clone the workspace:**
+### Configuración
+1. **Clonar el workspace:**
    ```bash
    mkdir -p ~/ros2_ws/src
    cd ~/ros2_ws/src
